@@ -1,83 +1,55 @@
-// Enumération des orientations possibles des portes
-#[derive(Debug)]
-enum Orientation {
-    Nord,
-    Sud,
-    Est,
-    Ouest,
+mod piece; // Importation du fichier piece.rs
+
+use std::io::{self, Write};
+use piece::Orientation; // Import de l'énumération Orientation
+
+// Fonction pour gérer la commande "go"
+fn go(direction: Orientation) {
+    println!("Vous allez vers {:?}", direction);
 }
 
-// Struct pour représenter une Pièce
-#[derive(Debug)]
-struct Piece {
-    orientations: Vec<Orientation>, // Liste des orientations des portes
+// Fonction pour gérer la commande "back"
+fn back() {
+    println!("Vous retournez en arrière.");
 }
 
-impl Piece {
-    // Fonction pour créer une nouvelle Pièce
-    fn new(orientations: Vec<Orientation>) -> Self 
-    {
-        // S'assurer que le nombre de portes est entre 1 et 4
-        if orientations.len() < 1 && orientations.len() > 4 
-        {
-            panic!("Le nombre de portes doit être entre 1 et 4.");
-        }
-        // Vérification que le nombre d'orientations correspond au nombre de portes
-        Piece 
-        {
-            orientations,
-        }
-    }
+// Fonction pour afficher l'aide
+fn help() {
+    println!("Commandes disponibles :");
+    println!("  go nord    - Aller vers le nord");
+    println!("  go sud     - Aller vers le sud");
+    println!("  go est     - Aller vers l'est");
+    println!("  go ouest   - Aller vers l'ouest");
+    println!("  back       - Revenir en arrière");
+    println!("  help       - Afficher l'aide");
+}
 
-    // Fonction pour afficher la pièce dans la console
-    fn afficher(&self) {
-        // Définition de la grille de la pièce (6x6)
-        let mut piece_grille = vec![vec!['X'; 5]; 3];
+// Fonction pour parser l'entrée utilisateur
+fn parse_input(input: &str) {
+    let mut words = input.trim().split_whitespace();
+    
+    let first_word = words.next();
+    let second_word = words.next();
 
-        // Toujours placer une porte au centre de la pièce
-        piece_grille[1][2] = 'o'; // Porte au centre
-
-        // Remplissage des autres portes selon les orientations
-        for orientation in &self.orientations {
-            match orientation {
-                Orientation::Nord => {
-                    // Placer une porte en haut)
-                    piece_grille[0][2] = 'o';
-                },
-                Orientation::Sud => {
-                    // Placer une porte en bas
-                    piece_grille[2][2] = 'o';
-                },
-                Orientation::Est => {
-                    // Placer une porte à droite
-                    piece_grille[1][3] = 'o';
-                    piece_grille[1][4] = 'o';
-                },
-                Orientation::Ouest => {
-                    // Placer une porte à gauche
-                    piece_grille[1][0] = 'o';
-                    piece_grille[1][1] = 'o';
-                },
-            }
-        }
-
-        // Affichage de la grille dans la console
-        for row in piece_grille {
-            println!("{}", row.iter().collect::<String>());
-        }
+    match (first_word, second_word) {
+        (Some("go"), Some("nord")) => go(Orientation::Nord),
+        (Some("go"), Some("sud")) => go(Orientation::Sud),
+        (Some("go"), Some("est")) => go(Orientation::Est),
+        (Some("go"), Some("ouest")) => go(Orientation::Ouest),
+        (Some("back"), None) => back(),
+        (Some("help"), None) => help(),
+        _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles."),
     }
 }
 
 fn main() {
-    // Exemple de création d'une pièce avec 3 portes (Nord, Est, Sud)
-    let orientations = vec![
-        Orientation::Nord,
-        Orientation::Est,
-        Orientation::Sud,
-    ];
-    
-    let piece = Piece::new(orientations);
-    
-    // Afficher la pièce dans la console
-    piece.afficher();
+    loop {
+        print!("> ");
+        io::stdout().flush().unwrap(); // Affiche le prompt immédiatement
+        
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        
+        parse_input(&input);
+    }
 }
