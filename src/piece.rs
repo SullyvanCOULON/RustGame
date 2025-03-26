@@ -1,6 +1,6 @@
 // Enumération des orientations possibles des portes
 #[derive(Debug)]
-enum Orientation {
+pub enum Orientation {
     Nord,
     Sud,
     Est,

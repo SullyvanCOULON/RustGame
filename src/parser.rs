@@ -1,7 +1,4 @@
-mod piece; // Importation du fichier piece.rs
-
-use std::io::{self, Write};
-use piece::Orientation; // Import de l'énumération Orientation
+use crate::piece::Orientation; // Import correct de l'énumération Orientation
 
 // Fonction pour gérer la commande "go"
 fn go(direction: Orientation) {
@@ -25,7 +22,7 @@ fn help() {
 }
 
 // Fonction pour parser l'entrée utilisateur
-fn parse_input(input: &str) {
+pub fn parse_input(input: &str) {
     let mut words = input.trim().split_whitespace();
     
     let first_word = words.next();
