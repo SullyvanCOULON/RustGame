@@ -7,26 +7,38 @@ enum Orientation {
     Ouest,
 }
 
+#[derive(Debug)]
+enum Type_Piece {
+    Debut,
+    Fin,
+    Normal,
+}
+
 // Struct pour représenter une Pièce
 #[derive(Debug)]
 struct Piece {
     orientations: Vec<Orientation>, // Liste des orientations des portes
+    type_p : Type_Piece, //type de la pièce
 }
 
 impl Piece {
     // Fonction pour créer une nouvelle Pièce
-    fn new(orientations: Vec<Orientation>) -> Self 
-    {
-        // S'assurer que le nombre de portes est entre 1 et 4
-        if orientations.len() < 1 && orientations.len() > 4 
-        {
-            panic!("Le nombre de portes doit être entre 1 et 4.");
+    fn new(type_p: TypePiece, orientations: Vec<Orientation>) -> Self {
+        let nombre_portes = orientations.len();
+
+        // Vérification que le nombre de portes est valide selon le type de pièce
+        match type_p {
+            TypePiece::Debut | TypePiece::Fin if nombre_portes != 1 => {
+                panic!("Les pièces de type 'Début' et 'Fin' doivent avoir exactement 1 porte.");
+            }
+            TypePiece::Normal if nombre_portes < 1 || nombre_portes > 4 => {
+                panic!("Les pièces 'Normales' doivent avoir entre 1 et 4 portes.");
+            }
+            _ => {}
         }
-        // Vérification que le nombre d'orientations correspond au nombre de portes
-        Piece 
-        {
-            orientations,
-        }
+
+        // Création de la pièce
+        Piece { type_p, orientations }
     }
 
     // Fonction pour afficher la pièce dans la console
