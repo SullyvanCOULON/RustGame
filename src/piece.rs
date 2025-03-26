@@ -1,31 +1,72 @@
-// Enumération des orientations possibles des portes
-// Enumération des orientations possibles des portes
-#[derive(Debug, PartialEq)]  // Ajoute ici le dérivatif PartialEq
+/// Enumération des orientations possibles des portes.
+///
+/// Cette énumération permet de spécifier les différentes directions dans lesquelles
+/// les portes peuvent être orientées dans une pièce du labyrinthe.
+#[derive(Debug, PartialEq)]  // Ajoute ici le dérivatif PartialEq pour permettre la comparaison
 pub enum Orientation {
+    /// Orientation vers le nord
     Nord,
+    /// Orientation vers le sud
     Sud,
+    /// Orientation vers l'est
     Est,
+    /// Orientation vers l'ouest
     Ouest,
 }
 
-
+/// Enumération des types de pièces du labyrinthe.
+///
+/// Chaque pièce peut être de type `Début`, `Fin` ou `Normal`
+/// - `Début` représente la première pièce du labyrinthe.
+/// - `Fin` représente la pièce d'arrivée.
+/// - `Normal` représente les pièces classiques.
 #[derive(Debug)]
 pub enum TypePiece {
+    /// Pièce de départ
     Debut,
+    /// Pièce de fin
     Fin,
+    /// Pièce classique
     Normal,
 }
 
-// Struct pour représenter une Pièce
+/// Struct représentant une pièce du labyrinthe.
+///
+/// Chaque pièce a un type (Début, Fin, Normal) et une liste d'orientations qui représente
+/// les portes dans cette pièce. La structure de la pièce est utilisée pour déterminer
+/// les déplacements possibles du joueur.
 #[derive(Debug)]
 pub struct Piece {
-    pub orientations: Vec<Orientation>, // Rendre ce champ public
-    typage_piece: TypePiece,            // Ce champ reste privé
+    /// Liste des orientations des portes de la pièce
+    /// Cette valeur est publique pour permettre l'accès extérieur à la liste d'orientations
+    pub orientations: Vec<Orientation>,
+    
+    /// Type de la pièce (Début, Fin ou Normal)
+    /// Ce champ est privé, car il ne doit pas être modifié directement
+    typage_piece: TypePiece,
 }
 
-
 impl Piece {
-    // Fonction pour créer une nouvelle Pièce
+    /// Crée une nouvelle pièce avec un type et un ensemble d'orientations de portes.
+    ///
+    /// Cette fonction vérifie que le nombre de portes est valide pour le type de pièce.
+    ///
+    /// # Arguments
+    /// 
+    /// * `typage_piece` - Le type de la pièce (Début, Fin, Normal).
+    /// * `orientations` - Une liste des orientations des portes dans la pièce.
+    ///
+    /// # Panique
+    ///
+    /// La fonction panique si le nombre de portes n'est pas valide pour le type de pièce.
+    /// - Les pièces de type `Début` et `Fin` doivent avoir exactement 1 porte.
+    /// - Les pièces de type `Normal` doivent avoir entre 1 et 4 portes.
+    ///
+    /// # Exemples
+    ///
+    /// ```rust
+    /// let piece = Piece::new(TypePiece::Normal, vec![Orientation::Nord, Orientation::Sud]);
+    /// ```
     pub fn new(typage_piece: TypePiece, orientations: Vec<Orientation>) -> Self {
         let nombre_portes = orientations.len();
 
@@ -44,7 +85,20 @@ impl Piece {
         Piece { typage_piece, orientations }
     }
 
-    // Fonction pour afficher la pièce dans la console
+    /// Affiche la pièce dans la console sous forme de grille avec des portes.
+    ///
+    /// La fonction place les portes au centre de la pièce, et en fonction des orientations,
+    /// elle place les autres portes dans la grille.
+    ///
+    /// Elle affiche également le type de la pièce pour indiquer au joueur s'il est
+    /// dans la pièce de départ, de fin ou une pièce classique.
+    ///
+    /// # Exemples
+    ///
+    /// ```rust
+    /// let piece = Piece::new(TypePiece::Normal, vec![Orientation::Est, Orientation::Sud]);
+    /// piece.afficher();
+    /// ```
     pub fn afficher(&self) {
         // Définition de la grille de la pièce (3x5)
         let mut piece_grille = vec![vec!['X'; 5]; 3];
