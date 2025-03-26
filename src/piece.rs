@@ -1,5 +1,6 @@
 // Enumération des orientations possibles des portes
-#[derive(Debug)]
+// Enumération des orientations possibles des portes
+#[derive(Debug, PartialEq)]  // Ajoute ici le dérivatif PartialEq
 pub enum Orientation {
     Nord,
     Sud,
@@ -7,8 +8,9 @@ pub enum Orientation {
     Ouest,
 }
 
+
 #[derive(Debug)]
-enum TypePiece {
+pub enum TypePiece {
     Debut,
     Fin,
     Normal,
@@ -16,14 +18,15 @@ enum TypePiece {
 
 // Struct pour représenter une Pièce
 #[derive(Debug)]
-struct Piece {
-    orientations: Vec<Orientation>, // Liste des orientations des portes
-    typage_piece: TypePiece,        // Type de la pièce
+pub struct Piece {
+    pub orientations: Vec<Orientation>, // Rendre ce champ public
+    typage_piece: TypePiece,            // Ce champ reste privé
 }
+
 
 impl Piece {
     // Fonction pour créer une nouvelle Pièce
-    fn new(typage_piece: TypePiece, orientations: Vec<Orientation>) -> Self {
+    pub fn new(typage_piece: TypePiece, orientations: Vec<Orientation>) -> Self {
         let nombre_portes = orientations.len();
 
         // Vérification que le nombre de portes est valide selon le type de pièce
@@ -42,7 +45,7 @@ impl Piece {
     }
 
     // Fonction pour afficher la pièce dans la console
-    fn afficher(&self) {
+    pub fn afficher(&self) {
         // Définition de la grille de la pièce (3x5)
         let mut piece_grille = vec![vec!['X'; 5]; 3];
 

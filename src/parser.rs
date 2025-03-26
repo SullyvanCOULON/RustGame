@@ -1,14 +1,5 @@
 use crate::piece::Orientation; // Import correct de l'énumération Orientation
-
-// Fonction pour gérer la commande "go"
-fn go(direction: Orientation) {
-    println!("Vous allez vers {:?}", direction);
-}
-
-// Fonction pour gérer la commande "back"
-fn back() {
-    println!("Vous retournez en arrière.");
-}
+use crate::Labyrinthe;
 
 // Fonction pour afficher l'aide
 fn help() {
@@ -21,19 +12,26 @@ fn help() {
     println!("  help       - Afficher l'aide");
 }
 
-// Fonction pour parser l'entrée utilisateur
-pub fn parse_input(input: &str) {
+
+pub fn parse_input(input: &str, labyrinthe: &mut Labyrinthe) {
     let mut words = input.trim().split_whitespace();
-    
     let first_word = words.next();
     let second_word = words.next();
 
     match (first_word, second_word) {
-        (Some("go"), Some("nord")) => go(Orientation::Nord),
-        (Some("go"), Some("sud")) => go(Orientation::Sud),
-        (Some("go"), Some("est")) => go(Orientation::Est),
-        (Some("go"), Some("ouest")) => go(Orientation::Ouest),
-        (Some("back"), None) => back(),
+        (Some("go"), Some("nord")) => {
+            labyrinthe.deplacer(Orientation::Nord);
+        }
+        (Some("go"), Some("sud")) => {
+            labyrinthe.deplacer(Orientation::Sud);
+        }
+        (Some("go"), Some("est")) => {
+            labyrinthe.deplacer(Orientation::Est);
+        }
+        (Some("go"), Some("ouest")) => {
+            labyrinthe.deplacer(Orientation::Ouest);
+        }
+        (Some("back"), None) => labyrinthe.revenir(),
         (Some("help"), None) => help(),
         _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles."),
     }
