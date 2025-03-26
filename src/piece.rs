@@ -8,7 +8,7 @@ enum Orientation {
 }
 
 #[derive(Debug)]
-enum Type_Piece {
+enum TypePiece {
     Debut,
     Fin,
     Normal,
@@ -18,16 +18,16 @@ enum Type_Piece {
 #[derive(Debug)]
 struct Piece {
     orientations: Vec<Orientation>, // Liste des orientations des portes
-    type_p : Type_Piece, //type de la pièce
+    typage_piece: TypePiece,        // Type de la pièce
 }
 
 impl Piece {
     // Fonction pour créer une nouvelle Pièce
-    fn new(type_p: TypePiece, orientations: Vec<Orientation>) -> Self {
+    fn new(typage_piece: TypePiece, orientations: Vec<Orientation>) -> Self {
         let nombre_portes = orientations.len();
 
         // Vérification que le nombre de portes est valide selon le type de pièce
-        match type_p {
+        match typage_piece {
             TypePiece::Debut | TypePiece::Fin if nombre_portes != 1 => {
                 panic!("Les pièces de type 'Début' et 'Fin' doivent avoir exactement 1 porte.");
             }
@@ -38,12 +38,12 @@ impl Piece {
         }
 
         // Création de la pièce
-        Piece { type_p, orientations }
+        Piece { typage_piece, orientations }
     }
 
     // Fonction pour afficher la pièce dans la console
     fn afficher(&self) {
-        // Définition de la grille de la pièce (6x6)
+        // Définition de la grille de la pièce (3x5)
         let mut piece_grille = vec![vec!['X'; 5]; 3];
 
         // Toujours placer une porte au centre de la pièce
@@ -52,24 +52,16 @@ impl Piece {
         // Remplissage des autres portes selon les orientations
         for orientation in &self.orientations {
             match orientation {
-                Orientation::Nord => {
-                    // Placer une porte en haut)
-                    piece_grille[0][2] = 'o';
-                },
-                Orientation::Sud => {
-                    // Placer une porte en bas
-                    piece_grille[2][2] = 'o';
-                },
+                Orientation::Nord => piece_grille[0][2] = 'o', // Porte en haut
+                Orientation::Sud => piece_grille[2][2] = 'o', // Porte en bas
                 Orientation::Est => {
-                    // Placer une porte à droite
                     piece_grille[1][3] = 'o';
-                    piece_grille[1][4] = 'o';
-                },
+                    piece_grille[1][4] = 'o'; // Porte à droite
+                }
                 Orientation::Ouest => {
-                    // Placer une porte à gauche
                     piece_grille[1][0] = 'o';
-                    piece_grille[1][1] = 'o';
-                },
+                    piece_grille[1][1] = 'o'; // Porte à gauche
+                }
             }
         }
 
@@ -77,5 +69,14 @@ impl Piece {
         for row in piece_grille {
             println!("{}", row.iter().collect::<String>());
         }
+
+        // Affichage du type de pièce
+        match self.typage_piece {
+            TypePiece::Debut => println!("Vous êtes au début du labyrinthe."),
+            TypePiece::Fin => println!("Bravo ! Vous êtes à la fin !"),
+            TypePiece::Normal => println!("Pièce classique."),
+        }
+
+        println!();
     }
 }
