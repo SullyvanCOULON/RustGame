@@ -13,7 +13,7 @@ use piece::{Piece, Orientation, TypePiece};
 /// La fonction `main` initialise le labyrinthe, affiche la première pièce et
 /// entre ensuite dans une boucle où elle attend l'entrée de l'utilisateur.
 fn main() {
-    let mut labyrinthe = Labyrinthe::new();
+    let mut labyrinthe = Labyrinthe::new(5, 5);
     labyrinthe.afficher_piece_actuelle();
 
     loop {

@@ -2,7 +2,7 @@
 ///
 /// Cette énumération permet de spécifier les différentes directions dans lesquelles
 /// les portes peuvent être orientées dans une pièce du labyrinthe.
-#[derive(Debug, PartialEq)]  // Ajoute ici le dérivatif PartialEq pour permettre la comparaison
+#[derive(Debug, PartialEq, Copy, Clone)]  // Ajoute ici le dérivatif PartialEq pour permettre la comparaison
 pub enum Orientation {
     /// Orientation vers le nord
     Nord,
@@ -43,7 +43,7 @@ pub struct Piece {
     
     /// Type de la pièce (Début, Fin ou Normal)
     /// Ce champ est privé, car il ne doit pas être modifié directement
-    typage_piece: TypePiece,
+    pub typage_piece: TypePiece,
 }
 
 impl Piece {
@@ -75,7 +75,7 @@ impl Piece {
             TypePiece::Debut | TypePiece::Fin if nombre_portes != 1 => {
                 panic!("Les pièces de type 'Début' et 'Fin' doivent avoir exactement 1 porte.");
             }
-            TypePiece::Normal if nombre_portes < 1 || nombre_portes > 4 => {
+            TypePiece::Normal if nombre_portes > 4 => {
                 panic!("Les pièces 'Normales' doivent avoir entre 1 et 4 portes.");
             }
             _ => {}
