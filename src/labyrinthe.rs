@@ -71,10 +71,8 @@ impl Labyrinthe {
         // Filtrer les orientations en fonction des salles non visitées
         orientations.retain(|(_, pos)| !visited_map.get(pos).copied().unwrap_or(false));
 
-        println!("Orientations possibles: {:?}", orientations);
         // Sélectionne aléatoirement une orientation possible ou retourne None si aucune
         let choosed = orientations.choose(&mut thread_rng()).map(|(o, _)| *o);
-        println!("Orientation choisie: {:?}", choosed);
         choosed
     }
     
@@ -201,7 +199,6 @@ impl Labyrinthe {
                     if (next_r.0 < -largeur / 2 || next_r.0 > largeur / 2 ||
                         next_r.1 < -hauteur / 2 || next_r.1 > hauteur / 2)
                     {
-                        println!("Sortie");
                         grid.get_mut(&new_pos).unwrap().orientations.push(dir);
                         // Créer et marquer la pièce comme finale
                         grid.insert(next_r, Piece {
@@ -222,8 +219,6 @@ impl Labyrinthe {
                 }
             }
         }
-
-        println!("grid: {:?}", grid);
     }
 
     /// Affiche la pièce actuelle dans le labyrinthe.
