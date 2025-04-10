@@ -1,67 +1,41 @@
 use crate::Labyrinthe;
-use crate::Orientation;
+use crate::piece::Orientation;
+/// 
 
-
-/// Affiche les commandes disponibles pour l'utilisateur.
+/// Affiche la liste des commandes disponibles.
 fn help() {
     println!("Commandes disponibles :");
-    println!("  go nord    - Aller vers le nord");
-    println!("  go sud     - Aller vers le sud");
-    println!("  go est     - Aller vers l'est");
-    println!("  go ouest   - Aller vers l'ouest");
-    println!("  back       - Revenir en arrière");
-    println!("  help       - Afficher l'aide");
+    println!("  go n     - Aller vers le nord");
+    println!("  go s     - Aller vers le sud");
+    println!("  go e     - Aller vers l'est");
+    println!("  go o     - Aller vers l'ouest");
+    println!("  back     - Revenir en arrière");
+    println!("  help     - Afficher l'aide");
+    println!("  quit     - Quitter le jeu\n");
 }
 
-/// Fonction pour analyser et exécuter les commandes de l'utilisateur.
+/// Analyse et exécute une commande texte entrée par l'utilisateur.
 ///
-/// Cette fonction parse l'entrée de l'utilisateur et effectue les actions appropriées
-/// en fonction de la commande donnée, comme se déplacer dans le labyrinthe ou afficher l'aide.
-///
-/// # Arguments
-/// 
-/// * `input` - Une chaîne de caractères contenant la commande à analyser.
-/// * `labyrinthe` - Une référence mutable à l'objet `Labyrinthe` sur lequel les actions doivent être effectuées.
-///
-/// # Exemples
-/// 
-/// ```rust
-/// let mut labyrinthe = Labyrinthe::new();
-/// parse_input("go nord", &mut labyrinthe);
-/// parse_input("back", &mut labyrinthe);
-/// ```
-///
-/// # Commandes valides
-/// * `go nord` - Déplace le joueur vers le nord si possible.
-/// * `go sud` - Déplace le joueur vers le sud si possible.
-/// * `go est` - Déplace le joueur vers l'est si possible.
-/// * `go ouest` - Déplace le joueur vers l'ouest si possible.
-/// * `back` - Fait revenir le joueur à la dernière position.
-/// * `help` - Affiche la liste des commandes disponibles.
-///
-/// # Panique
-/// 
-/// Cette fonction panique si une commande invalide est entrée. Utilisez `help` pour voir les commandes valides.
+/// # Paramètres
+/// - `input`: chaîne entrée par l'utilisateur.
+/// - `labyrinthe`: référence mutable vers le labyrinthe actuel.
 pub fn parse_input(input: &str, labyrinthe: &mut Labyrinthe) {
     let mut words = input.trim().split_whitespace();
     let first_word = words.next();
     let second_word = words.next();
 
     match (first_word, second_word) {
-        (Some("go"), Some("nord")) => {
-            labyrinthe.deplacer(Orientation::Nord);
-        }
-        (Some("go"), Some("sud")) => {
-            labyrinthe.deplacer(Orientation::Sud);
-        }
-        (Some("go"), Some("est")) => {
-            labyrinthe.deplacer(Orientation::Est);
-        }
-        (Some("go"), Some("ouest")) => {
-            labyrinthe.deplacer(Orientation::Ouest);
-        }
+        (Some("go"), Some("n")) => labyrinthe.deplacer(Orientation::N),
+        (Some("go"), Some("s")) => labyrinthe.deplacer(Orientation::S),
+        (Some("go"), Some("e")) => labyrinthe.deplacer(Orientation::E),
+        (Some("go"), Some("o")) => labyrinthe.deplacer(Orientation::O),
         (Some("back"), None) => labyrinthe.revenir(),
         (Some("help"), None) => help(),
-        _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles."),
+        (Some("quit"), None) => {
+            println!("#### Quit");
+            println!("Merci d’avoir joué !");
+            std::process::exit(0);
+        },
+        _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles.")
     }
 }
