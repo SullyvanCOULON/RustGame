@@ -1,13 +1,11 @@
 use crate::piece::{Orientation, TypePiece, Piece};
 
-use rand::Rng;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
-use rand::prelude::IteratorRandom;
+use crate::musique::exec_music;
+
 
 use std::collections::{HashMap, VecDeque};
 
-use crate::doors::{get_next_room, random_orientation, invert_orientation, generer_portes};
+use crate::doors::{get_next_room, generer_portes};
 
 /// Structure représentant un labyrinthe navigable.
 ///
@@ -50,7 +48,7 @@ impl Labyrinthe {
         let mut grid = HashMap::new();
         for x in -largeur/2..=largeur/2 {
             for y in -hauteur/2..=hauteur/2 {
-                grid.insert((x, y), Piece::new(TypePiece::Normal, vec![]));
+                grid.insert((x, y), Piece::new(TypePiece::Normal, vec![], exec_music("do", "majeur", 3, "lent")));
             }
         }
         grid

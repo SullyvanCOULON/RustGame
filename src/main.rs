@@ -2,6 +2,7 @@ mod parser;
 mod labyrinthe;
 mod piece;
 mod doors;
+mod musique;
 
 use parser::parse_input;
 use std::io::{self, Write};

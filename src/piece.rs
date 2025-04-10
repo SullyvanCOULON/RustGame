@@ -22,6 +22,10 @@ pub enum TypePiece {
 pub struct Piece {
     pub orientations: Vec<Orientation>,
     pub typage_piece: TypePiece,
+
+    /// Musique propre à la la pièce;
+    /// Cette valeur est publique pour pouvoir la lire
+    pub musique:Vec<i16>,
 }
 
 impl Piece {
@@ -29,7 +33,7 @@ impl Piece {
     ///
     /// # Panique
     /// Si le nombre de portes est incorrect selon le type de pièce.
-    pub fn new(typage_piece: TypePiece, orientations: Vec<Orientation>) -> Self {
+    pub fn new(typage_piece: TypePiece, orientations: Vec<Orientation>, musique: Vec<i16>) -> Self {
         let nombre_portes = orientations.len();
         match typage_piece {
             TypePiece::Fin if nombre_portes != 1 => {
@@ -41,7 +45,7 @@ impl Piece {
             _ => {}
         }
 
-        Piece { typage_piece, orientations }
+        Piece { typage_piece, orientations, musique }
     }
 
     /// Affiche visuellement la pièce et ses portes dans la console.
@@ -60,7 +64,6 @@ impl Piece {
                     Err(e) => println!("Erreur lors de la lecture du fichier ASCII: {}", e),
                 }
                 std::process::exit(0);
-                return;
             },
             TypePiece::Normal => println!("Normal boring room...\n"),
         }
@@ -77,5 +80,23 @@ impl Piece {
         for row in piece_grille {
             println!("{}", row.iter().collect::<String>());
         }
+
+        self.jouer_musique();
+    }
+    /// Joue la musique associée à la pièce.
+    fn jouer_musique(&self) {
+        
+        let (_stream, stream_handle) = rodio::OutputStream::try_default()
+            .unwrap_or_else(|e| panic!("Erreur lors de la création du OutputStream: {:?}", e));
+
+        let sink = rodio::Sink::try_new(&stream_handle)
+            .unwrap_or_else(|e| panic!("Erreur lors de la création du Sink: {:?}", e));
+        
+        let source = rodio::buffer::SamplesBuffer::new(1, 44100, self.musique.clone());
+        sink.append(source);
+        
+        sink.sleep_until_end();
+        std::thread::sleep(std::time::Duration::from_millis(500));
+        
     }
 }
