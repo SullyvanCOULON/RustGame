@@ -1,6 +1,5 @@
 use crate::piece::Orientation;
 use crate::Labyrinthe;
-///
 
 /// Affiche la liste des commandes disponibles.
 fn help() {
@@ -20,7 +19,7 @@ fn help() {
 /// - `input`: chaîne entrée par l'utilisateur.
 /// - `labyrinthe`: référence mutable vers le labyrinthe actuel.
 pub fn parse_input(input: &str, labyrinthe: &mut Labyrinthe) {
-    let mut words = input.trim().split_whitespace();
+    let mut words = input.split_whitespace();
     let first_word = words.next();
     let second_word = words.next();
 

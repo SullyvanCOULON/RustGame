@@ -1,13 +1,8 @@
 use crate::piece::{Orientation, Piece, TypePiece};
 
-use rand::prelude::IteratorRandom;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
-use rand::Rng;
-
 use std::collections::{HashMap, VecDeque};
 
-use crate::doors::{generer_portes, get_next_room, invert_orientation, random_orientation};
+use crate::doors::{generer_portes, get_next_room};
 
 /// Structure représentant un labyrinthe navigable.
 ///

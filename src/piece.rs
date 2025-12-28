@@ -63,7 +63,6 @@ impl Piece {
                     Err(e) => println!("Erreur lors de la lecture du fichier ASCII: {}", e),
                 }
                 std::process::exit(0);
-                return;
             }
             TypePiece::Normal => println!("Normal boring room...\n"),
         }

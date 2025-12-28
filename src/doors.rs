@@ -3,7 +3,6 @@ use crate::piece::{Orientation, Piece, TypePiece};
 use rand::prelude::IteratorRandom;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand::Rng;
 
 use std::collections::HashMap;
 
@@ -102,7 +101,6 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
     }
 
     let mut suivants: Vec<(i32, i32)> = Vec::new();
-    let mut position_generator = (0, 0);
     let mut rng = rand::thread_rng();
 
     // Définir la première pièce comme point de départ
@@ -123,7 +121,6 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
 
     while visited_map.values().any(|&v| !v) {
         while let Some((x, y)) = suivants.pop() {
-            position_generator = (x, y);
             if visited_map.get(&(x, y)) == Some(&true) {
                 continue;
             }
@@ -145,7 +142,6 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
                         .push(next_orientation);
                     last_orientation = Some(next_orientation);
                     suivants.push(next_room);
-                    position_generator = (x, y);
                 }
             } else {
                 break;
