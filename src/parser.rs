@@ -1,6 +1,6 @@
-use crate::Labyrinthe;
 use crate::piece::Orientation;
-/// 
+use crate::Labyrinthe;
+///
 
 /// Affiche la liste des commandes disponibles.
 fn help() {
@@ -35,7 +35,7 @@ pub fn parse_input(input: &str, labyrinthe: &mut Labyrinthe) {
             println!("#### Quit");
             println!("Merci d’avoir joué !");
             std::process::exit(0);
-        },
-        _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles.")
+        }
+        _ => println!("Commande invalide. Tapez 'help' pour voir les commandes disponibles."),
     }
 }

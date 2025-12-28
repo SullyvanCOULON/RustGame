@@ -41,7 +41,10 @@ impl Piece {
             _ => {}
         }
 
-        Piece { typage_piece, orientations }
+        Piece {
+            typage_piece,
+            orientations,
+        }
     }
 
     /// Affiche visuellement la pièce et ses portes dans la console.
@@ -61,7 +64,7 @@ impl Piece {
                 }
                 std::process::exit(0);
                 return;
-            },
+            }
             TypePiece::Normal => println!("Normal boring room...\n"),
         }
 
@@ -69,8 +72,14 @@ impl Piece {
             match orientation {
                 Orientation::N => piece_grille[0][2] = 'o',
                 Orientation::S => piece_grille[2][2] = 'o',
-                Orientation::E => { piece_grille[1][3] = 'o'; piece_grille[1][4] = 'o'; },
-                Orientation::O => { piece_grille[1][0] = 'o'; piece_grille[1][1] = 'o'; },
+                Orientation::E => {
+                    piece_grille[1][3] = 'o';
+                    piece_grille[1][4] = 'o';
+                }
+                Orientation::O => {
+                    piece_grille[1][0] = 'o';
+                    piece_grille[1][1] = 'o';
+                }
             }
         }
 

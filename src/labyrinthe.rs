@@ -1,13 +1,13 @@
-use crate::piece::{Orientation, TypePiece, Piece};
+use crate::piece::{Orientation, Piece, TypePiece};
 
-use rand::Rng;
+use rand::prelude::IteratorRandom;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand::prelude::IteratorRandom;
+use rand::Rng;
 
 use std::collections::{HashMap, VecDeque};
 
-use crate::doors::{get_next_room, random_orientation, invert_orientation, generer_portes};
+use crate::doors::{generer_portes, get_next_room, invert_orientation, random_orientation};
 
 /// Structure représentant un labyrinthe navigable.
 ///
@@ -48,8 +48,8 @@ impl Labyrinthe {
     /// Une `HashMap` des coordonnées vers des pièces normales.
     fn generer_labyrinthe(largeur: i32, hauteur: i32) -> HashMap<(i32, i32), Piece> {
         let mut grid = HashMap::new();
-        for x in -largeur/2..=largeur/2 {
-            for y in -hauteur/2..=hauteur/2 {
+        for x in -largeur / 2..=largeur / 2 {
+            for y in -hauteur / 2..=hauteur / 2 {
                 grid.insert((x, y), Piece::new(TypePiece::Normal, vec![]));
             }
         }
@@ -75,9 +75,9 @@ impl Labyrinthe {
     /// - `direction`: direction de déplacement (N, S, E, O).
     pub fn deplacer(&mut self, direction: Orientation) {
         let (x, y) = self.position;
-        let nouvelle_position = get_next_room((x,y), direction);
+        let nouvelle_position = get_next_room((x, y), direction);
 
-        if let Some(piece) = self.grid.get(&(x,y)) {
+        if let Some(piece) = self.grid.get(&(x, y)) {
             if piece.orientations.contains(&direction) {
                 self.historique.push_back(self.position);
                 self.position = nouvelle_position;

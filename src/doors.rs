@@ -1,9 +1,9 @@
-use crate::piece::{Orientation, TypePiece, Piece};
+use crate::piece::{Orientation, Piece, TypePiece};
 
-use rand::Rng;
+use rand::prelude::IteratorRandom;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand::prelude::IteratorRandom;
+use rand::Rng;
 
 use std::collections::HashMap;
 
@@ -23,7 +23,7 @@ pub fn random_orientation(
     visited_map: &HashMap<(i32, i32), bool>,
     hauteur: i32,
     largeur: i32,
-    depassement: bool
+    depassement: bool,
 ) -> Option<Orientation> {
     let mut orientations = vec![
         (Orientation::N, (position.0, position.1 - 1)),
@@ -56,7 +56,7 @@ pub fn random_orientation(
 ///
 /// # Retour
 /// Coordonnées de la pièce voisine dans la direction indiquée.
-pub fn get_next_room((x,y): (i32,i32), direction: Orientation) -> (i32, i32) {
+pub fn get_next_room((x, y): (i32, i32), direction: Orientation) -> (i32, i32) {
     match direction {
         Orientation::N => (x, y - 1),
         Orientation::S => (x, y + 1),
@@ -95,8 +95,8 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
     let mut has_exit = false;
 
     // Initialiser la carte des pièces non visitées
-    for x in -largeur/2..=(largeur/2) {
-        for y in -hauteur/2..=(hauteur/2) {
+    for x in -largeur / 2..=(largeur / 2) {
+        for y in -hauteur / 2..=(hauteur / 2) {
             visited_map.insert((x, y), false);
         }
     }
@@ -106,16 +106,21 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
     let mut rng = rand::thread_rng();
 
     // Définir la première pièce comme point de départ
-    let start_orientation = random_orientation((0,0), &visited_map, hauteur, largeur, false);
-    if let Some(first_piece) = grid.get_mut(&(0,0)) {
+    let start_orientation = random_orientation((0, 0), &visited_map, hauteur, largeur, false);
+    if let Some(first_piece) = grid.get_mut(&(0, 0)) {
         first_piece.typage_piece = TypePiece::Debut;
-        first_piece.orientations.push(start_orientation.expect("REASON"));
+        first_piece
+            .orientations
+            .push(start_orientation.expect("REASON"));
     }
     visited_map.insert((0, 0), true);
-    suivants.push(get_next_room((0,0), grid.get(&(0, 0)).unwrap().orientations[0]));
+    suivants.push(get_next_room(
+        (0, 0),
+        grid.get(&(0, 0)).unwrap().orientations[0],
+    ));
 
     let mut last_orientation = start_orientation;
-    
+
     while visited_map.values().any(|&v| !v) {
         while let Some((x, y)) = suivants.pop() {
             position_generator = (x, y);
@@ -129,10 +134,15 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
             grid.get_mut(&(x, y)).unwrap().orientations.push(back_door);
 
             // Générer une nouvelle orientation
-            if let Some(next_orientation) = random_orientation((x, y), &visited_map, hauteur, largeur, false) {
+            if let Some(next_orientation) =
+                random_orientation((x, y), &visited_map, hauteur, largeur, false)
+            {
                 let next_room = get_next_room((x, y), next_orientation);
                 if visited_map.get(&next_room) == Some(&false) {
-                    grid.get_mut(&(x,y)).unwrap().orientations.push(next_orientation);
+                    grid.get_mut(&(x, y))
+                        .unwrap()
+                        .orientations
+                        .push(next_orientation);
                     last_orientation = Some(next_orientation);
                     suivants.push(next_room);
                     position_generator = (x, y);
@@ -143,11 +153,14 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
         }
 
         // Connexion d'une nouvelle pièce non visitée à une voisine déjà visitée
-        if let Some((&new_pos, _)) = visited_map.iter()
-            .filter(|(&(x, y), &visited)| !visited &&
-                [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-                    .iter()
-                    .any(|p| visited_map.get(p) == Some(&true)))
+        if let Some((&new_pos, _)) = visited_map
+            .iter()
+            .filter(|(&(x, y), &visited)| {
+                !visited
+                    && [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+                        .iter()
+                        .any(|p| visited_map.get(p) == Some(&true))
+            })
             .choose(&mut rng)
         {
             if let Some(&(visited_x, visited_y, dir)) = [
@@ -155,27 +168,41 @@ pub fn generer_portes(grid: &mut HashMap<(i32, i32), Piece>, largeur: i32, haute
                 (new_pos.0 + 1, new_pos.1, Orientation::E),
                 (new_pos.0, new_pos.1 - 1, Orientation::N),
                 (new_pos.0, new_pos.1 + 1, Orientation::S),
-            ].iter().find(|(vx, vy, _)| visited_map.get(&(*vx, *vy)) == Some(&true)) {
+            ]
+            .iter()
+            .find(|(vx, vy, _)| visited_map.get(&(*vx, *vy)) == Some(&true))
+            {
                 let visited_pos = (visited_x, visited_y);
                 let back_door = invert_orientation(dir);
 
-                grid.get_mut(&visited_pos).unwrap().orientations.push(back_door);
+                grid.get_mut(&visited_pos)
+                    .unwrap()
+                    .orientations
+                    .push(back_door);
                 grid.get_mut(&new_pos).unwrap().orientations.push(dir);
                 visited_map.insert(new_pos, true);
             }
 
             // Possiblement générer une pièce de fin si hors limites
-            if let Some(dir) = random_orientation(new_pos, &visited_map, hauteur, largeur, !has_exit) {
+            if let Some(dir) =
+                random_orientation(new_pos, &visited_map, hauteur, largeur, !has_exit)
+            {
                 let next_r = get_next_room(new_pos, dir);
                 let back_door = invert_orientation(dir);
 
-                if next_r.0 < -largeur / 2 || next_r.0 > largeur / 2 ||
-                   next_r.1 < -hauteur / 2 || next_r.1 > hauteur / 2 {
+                if next_r.0 < -largeur / 2
+                    || next_r.0 > largeur / 2
+                    || next_r.1 < -hauteur / 2
+                    || next_r.1 > hauteur / 2
+                {
                     grid.get_mut(&new_pos).unwrap().orientations.push(dir);
-                    grid.insert(next_r, Piece {
-                        typage_piece: TypePiece::Fin,
-                        orientations: vec![back_door],
-                    });
+                    grid.insert(
+                        next_r,
+                        Piece {
+                            typage_piece: TypePiece::Fin,
+                            orientations: vec![back_door],
+                        },
+                    );
                     has_exit = true;
                 } else {
                     grid.get_mut(&new_pos).unwrap().orientations.push(dir);

@@ -1,11 +1,11 @@
-mod parser;
-mod labyrinthe;
-mod piece;
 mod doors;
+mod labyrinthe;
+mod parser;
+mod piece;
 
+use labyrinthe::Labyrinthe;
 use parser::parse_input;
 use std::io::{self, Write};
-use labyrinthe::Labyrinthe;
 
 /// Fonction principale du jeu.
 ///
@@ -61,11 +61,13 @@ fn lire_entier(message: &str) -> i32 {
                 if valeur >= 2 {
                     return valeur;
                 } else {
-                    println!("#### Erreur\nVeuillez entrer un nombre entier supérieur ou égal à 2.\n");
+                    println!(
+                        "#### Erreur\nVeuillez entrer un nombre entier supérieur ou égal à 2.\n"
+                    );
                 }
             } else {
                 println!("#### Erreur\nVeuillez entrer un nombre entier valide.\n");
             }
-        } 
+        }
     }
 }
